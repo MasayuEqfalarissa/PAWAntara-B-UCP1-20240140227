@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Produk - Toko Ariesta</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-rose-50/60 text-gray-700 flex flex-col min-h-screen">
+
+  <!-- Panggil partial navbar -->
+  <%- include('partials/navbar') %>
+
+  <!-- Konten utama daftar produk -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+    <h1 class="text-2xl md:text-3xl font-extrabold text-rose-900 mb-6">Katalog Produk Sembako 🛒</h1>
+
+    <!-- Form filter dan pencarian produk -->
+    <section class="bg-white p-4 rounded-2xl shadow-sm border border-rose-100 mb-8">
+      <form action="/produk" method="GET" class="flex flex-col md:flex-row gap-3">
+        <div class="flex-grow">
+          <label for="search" class="sr-only">Cari Produk</label>
+          <input type="text" id="search" name="search" value="<%= currentSearch %>" placeholder="Cari nama produk..." class="border border-rose-200 p-2.5 rounded-xl w-full focus:outline-rose-400 text-sm">
+        </div>
+        
+        <div>
+          <label for="kategori" class="sr-only">Kategori</label>
+          <select id="kategori" name="kategori" class="border border-rose-200 p-2.5 rounded-xl w-full focus:outline-rose-400 text-sm text-gray-600">
+            <option value="">Semua Kategori</option>
+            <option value="Beras" <%= currentKategori === 'Beras' ? 'selected' : '' %>>Beras</option>
+            <option value="Minyak" <%= currentKategori === 'Minyak' ? 'selected' : '' %>>Minyak</option>
+            <option value="Gula" <%= currentKategori === 'Gula' ? 'selected' : '' %>>Gula</option>
+            <option value="Telur" <%= currentKategori === 'Telur' ? 'selected' : '' %>>Telur</option>
+            <option value="Sembako" <%= currentKategori === 'Sembako' ? 'selected' : '' %>>Sembako Lainnya</option>
+          </select>
+        </div>
+
+        <button type="submit" class="bg-rose-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-rose-600 transition shadow-sm">Cari</button>
+      </form>
+    </section>
+
+    <!-- Grid katalog seluruh produk -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+      <% if (products.length === 0) { %>
+        <!-- Pesan jika produk tidak ditemukan -->
+        <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-rose-100 p-6">
+          <p class="text-rose-400 text-3xl mb-2">🏼</p>
+          <p class="text-gray-500 text-sm">Produk yang kamu cari tidak ditemukan.</p>
+        </div>
+      <% } else { %>
+        <% products.forEach(product => { %>
+          <!-- Kartu item produk -->
+          <article class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 flex flex-col justify-between hover:shadow-md transition">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full"><%= product.category %></span>
+                <span class="text-xs text-gray-400">Stok: <%= product.stock %></span>
+              </div>
+              <h2 class="text-base font-bold text-gray-800"><%= product.name %></h2>
+              <p class="text-rose-500 font-extrabold text-lg mt-1">Rp <%= product.price.toLocaleString('id-ID') %></p>
+            </div>
+            <a href="/produk/<%= product.id %>" class="mt-4 block text-center bg-rose-50 text-rose-600 font-bold py-2 rounded-xl hover:bg-rose-500 hover:text-white transition text-xs">Lihat Detail</a>
+          </article>
+        <% }) %>
+      <% } %>
+    </section>
+  </main>
+
+  <!-- Panggil partial footer -->
+  <%- include('partials/footer') %>
+
+</body>
+</html>

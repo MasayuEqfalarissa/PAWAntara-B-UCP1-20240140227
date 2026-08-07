@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toko Sembako Ariesta - Beranda</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-rose-50/60 text-gray-700 flex flex-col min-h-screen">
+
+  <!-- Panggil partial navbar -->
+  <%- include('partials/navbar') %>
+
+  <!-- Konten utama halaman beranda -->
+  <main class="flex-grow">
+    <!-- Section hero pembuka -->
+    <section class="bg-rose-100/80 text-rose-950 py-14 text-center px-4 border-b border-rose-200/60">
+      <span class="inline-block bg-white text-rose-500 text-xs font-bold px-3 py-1 rounded-full shadow-sm mb-3">✨ Belanja Sembako Makin Happy</span>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 tracking-tight text-rose-900">Sembako Lengkap & Segar Ibu Aries</h1>
+      <p class="text-base md:text-lg max-w-2xl mx-auto mb-6 text-gray-600">Pesan kebutuhan dapur tanpa ribet. Cek stok ter-update dan harga paling ramah di kantong!</p>
+      <a href="/produk" class="bg-rose-500 text-white font-bold px-6 py-3 rounded-full shadow-md hover:bg-rose-600 transition inline-block text-sm">Lihat Semua Produk 🛒</a>
+    </section>
+
+    <div class="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Section preview produk pilihan -->
+      <section class="md:col-span-3">
+        <h2 class="text-xl font-bold mb-5 text-rose-900 flex items-center gap-2">
+          <span>🛍️</span> Produk Pilihan Paling Laris
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+          <% featuredProducts.forEach(product => { %>
+            <!-- Kartu item produk -->
+            <article class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 flex flex-col justify-between hover:shadow-md transition">
+              <div>
+                <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full"><%= product.category %></span>
+                <h3 class="text-base font-bold mt-3 text-gray-800"><%= product.name %></h3>
+                <p class="text-rose-500 font-extrabold text-lg mt-1">Rp <%= product.price.toLocaleString('id-ID') %></p>
+              </div>
+              <a href="/produk/<%= product.id %>" class="mt-4 block text-center bg-rose-50 text-rose-600 font-bold py-2 rounded-xl hover:bg-rose-500 hover:text-white transition text-xs">Lihat Detail</a>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+
+      <!-- Sidebar informasi tambahan -->
+      <aside class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 h-fit">
+        <h3 class="text-base font-bold text-rose-900 mb-2 flex items-center gap-1.5">
+          <span>🎀</span> Info Toko
+        </h3>
+        <p class="text-xs leading-relaxed text-gray-500 mb-4">Buka setiap hari jam 07.00 - 20.00 WIB. Melayani antar langsung ke rumah kamu!</p>
+        <a href="/tanya-ai" class="text-xs text-rose-500 font-bold hover:underline block">Tanya AI seputar ongkir &rarr;</a>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Panggil partial footer -->
+  <%- include('partials/footer') %>
+
+</body>
+</html>
