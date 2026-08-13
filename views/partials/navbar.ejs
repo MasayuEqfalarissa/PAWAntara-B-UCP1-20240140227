@@ -1,0 +1,28 @@
+<!-- Menu Navigasi Utama  -->
+<header class="bg-emerald-600 text-white shadow-md sticky top-0 z-50">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex justify-between items-center" aria-label="Navigasi Utama">
+    <!-- Brand / Logo Toko -->
+    <a href="/" class="text-2xl font-black tracking-tight flex items-center gap-2">
+      🛍️ <span>Toko Ariesta</span>
+    </a>
+
+    <!-- Menu Layar Desktop -->
+    <div class="hidden md:flex items-center gap-8 font-semibold text-sm">
+      <a href="/" class="hover:text-emerald-200 transition">Beranda</a>
+      <a href="/produk" class="hover:text-emerald-200 transition">Daftar Produk</a>
+      <a href="/tanya-ai" class="hover:text-emerald-200 transition">Tanya AI</a>
+    </div>
+
+    <!-- Tombol Hamburger Mobile -->
+    <button id="menu-btn" class="md:hidden focus:outline-none text-2xl" aria-label="Buka Menu Navigasi">
+      ☰
+    </button>
+  </nav>
+
+  <!-- Dropdown Mobile -->
+  <div id="mobile-menu" class="hidden md:hidden bg-emerald-700 px-4 pt-2 pb-4 space-y-2 text-sm font-medium">
+    <a href="/" class="block hover:bg-emerald-600 px-3 py-2 rounded-lg">Beranda</a>
+    <a href="/produk" class="block hover:bg-emerald-600 px-3 py-2 rounded-lg">Daftar Produk</a>
+    <a href="/tanya-ai" class="block hover:bg-emerald-600 px-3 py-2 rounded-lg">Tanya AI</a>
+  </div>
+</header>
