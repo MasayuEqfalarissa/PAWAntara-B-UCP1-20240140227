@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin - Toko Ariesta</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-100/70 text-gray-800 flex flex-col min-h-screen font-sans">
+
+  <%- include('partials/navbar') %>
+
+  <main class="max-w-md mx-auto my-12 p-6 bg-white rounded-2xl shadow-sm border border-gray-100 w-full">
+    <h1 class="text-2xl font-bold text-center text-gray-900 mb-6">Login Admin</h1>
+
+    <div id="alert" class="hidden mb-4 p-3 text-xs rounded-xl text-red-700 bg-red-100 border border-red-200"></div>
+
+    <form id="form-login" class="space-y-4">
+      <div>
+        <label for="username" class="block text-xs font-bold text-gray-700 mb-1">Username</label>
+        <input type="text" id="username" class="w-full border border-gray-200 p-2.5 rounded-xl text-sm focus:outline-emerald-500" placeholder="Masukkan username">
+      </div>
+
+      <div>
+        <label for="password" class="block text-xs font-bold text-gray-700 mb-1">Password</label>
+        <input type="password" id="password" class="w-full border border-gray-200 p-2.5 rounded-xl text-sm focus:outline-emerald-500" placeholder="Masukkan password">
+      </div>
+
+      <button type="submit" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-sm hover:bg-emerald-700 transition shadow-sm">
+        Masuk Dashboard
+      </button>
+    </form>
+  </main>
+
+  <script>
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const alert = document.getElementById('alert');
+
+      // Validasi Frontend
+      if (!username || !password) {
+        alert.textContent = 'Username dan password tidak boleh kosong!';
+        alert.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          window.location.href = '/admin/dashboard';
+        } else {
+          alert.textContent = data.message || 'Login gagal!';
+          alert.classList.remove('hidden');
+        }
+      } catch (err) {
+        alert.textContent = 'Terjadi kesalahan sistem.';
+        alert.classList.remove('hidden');
+      }
+    });
+  </script>
+
+  <%- include('partials/footer') %>
+
+</body>
+</html>

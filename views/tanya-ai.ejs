@@ -6,35 +6,76 @@
   <title>Tanya AI - Toko Ariesta</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-rose-50/60 text-gray-700 flex flex-col min-h-screen">
+<body class="bg-stone-100/70 text-gray-800 flex flex-col min-h-screen font-sans">
 
-  <!-- Panggil partial navbar -->
   <%- include('partials/navbar') %>
 
-  <!-- Konten utama percakapan AI -->
   <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full">
-    <h1 class="text-2xl font-extrabold text-rose-900 mb-1">Tanya Asisten AI 🤖✨</h1>
+    <h1 class="text-2xl font-bold text-gray-900 mb-1">Tanya Asisten AI 🤖</h1>
     <p class="text-xs text-gray-500 mb-6">Tanyakan seputar stok, harga, atau jadwal pengiriman toko.</p>
 
-    <!-- Box tampilan riwayat percakapan -->
-    <section class="bg-white border border-rose-100 rounded-2xl shadow-sm p-4 h-64 overflow-y-auto mb-4 space-y-3">
-      <div class="bg-rose-100/70 text-rose-950 p-3.5 rounded-2xl rounded-tl-none max-w-md text-xs leading-relaxed">
-        <p class="font-bold text-rose-600 mb-1">Asisten AI 🌸</p>
-        <p>Halo! Ada yang bisa saya bantu seputar stok atau harga di Toko Ariesta hari ini?</p>
+    <!-- Wadah Chat -->
+    <section id="chat-container" class="bg-white border border-gray-100 rounded-2xl shadow-sm p-4 h-80 overflow-y-auto mb-4 space-y-3">
+      <div class="bg-emerald-50 text-emerald-950 p-3.5 rounded-2xl rounded-tl-none max-w-md text-xs leading-relaxed border border-emerald-100">
+        <p class="font-bold text-emerald-700 mb-1">Asisten AI 🤖</p>
+        <p>Halo! Ada yang bisa saya bantu seputar produk di Toko Ariesta hari ini?</p>
       </div>
     </section>
 
-    <!-- Form kirim pertanyaan chat -->
-    <form class="flex flex-col gap-2">
-      <label for="pertanyaan" class="font-bold text-rose-900 text-xs">Tulis pertanyaan kamu:</label>
+    <!-- Form Kirim Pesan -->
+    <form id="chat-form" class="flex flex-col gap-2">
+      <label for="pertanyaan" class="font-bold text-gray-800 text-xs">Tulis pertanyaan kamu:</label>
       <div class="flex gap-2">
-        <input type="text" id="pertanyaan" name="pertanyaan" placeholder="Contoh: Telur 1kg ready ga ya?" class="border border-rose-200 p-3 rounded-xl flex-grow focus:outline-rose-400 text-sm" required>
-        <button type="submit" class="bg-rose-500 text-white font-bold px-5 py-3 rounded-xl hover:bg-rose-600 transition text-sm shadow-sm">Kirim</button>
+        <input type="text" id="pertanyaan" name="pertanyaan" placeholder="Contoh: Beras 5kg ready ga ya?" class="border border-gray-200 p-3 rounded-xl flex-grow focus:outline-emerald-500 text-sm" required>
+        <button type="submit" class="bg-emerald-600 text-white font-bold px-5 py-3 rounded-xl hover:bg-emerald-700 transition text-sm shadow-sm">Kirim</button>
       </div>
     </form>
   </main>
 
-  <!-- Panggil partial footer -->
+  <script>
+    const chatForm = document.getElementById('chat-form');
+    const chatContainer = document.getElementById('chat-container');
+    const inputMsg = document.getElementById('pertanyaan');
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = inputMsg.value.trim();
+      if (!message) return;
+
+      // 1. Tampilkan Bubble Chat Pengguna
+      chatContainer.innerHTML += `
+        <div class="bg-gray-100 text-gray-800 p-3.5 rounded-2xl rounded-tr-none max-w-md text-xs leading-relaxed ml-auto border border-gray-200">
+          <p class="font-bold text-gray-600 mb-1">Kamu</p>
+          <p>${message}</p>
+        </div>
+      `;
+
+      inputMsg.value = '';
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // 2. Kirim Request ke Backend via Fetch API
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+        const data = await res.json();
+
+        // 3. Tampilkan Balasan AI dari Server
+        chatContainer.innerHTML += `
+          <div class="bg-emerald-50 text-emerald-950 p-3.5 rounded-2xl rounded-tl-none max-w-md text-xs leading-relaxed border border-emerald-100">
+            <p class="font-bold text-emerald-700 mb-1">Asisten AI 🤖</p>
+            <p>${data.reply}</p>
+          </div>
+        `;
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      } catch (err) {
+        console.error('Error chat:', err);
+      }
+    });
+  </script>
+
   <%- include('partials/footer') %>
 
 </body>
