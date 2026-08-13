@@ -1,67 +1,44 @@
-// Inisialisasi modul Express, Path, dan Data Produk
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
-const products = require('./data/products');
+require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Pengaturan View Engine EJS dan Lokasi Folder Views
+// Middleware Body Parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Set EJS View Engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Menyajikan File Statis (CSS, JS, Gambar) dari Folder Public
-app.use(express.static(path.join(__dirname, 'public')));
-
-// 1. Route Halaman Beranda
-app.get('/', (req, res) => {
-  const featuredProducts = products.slice(0, 3);
-  res.render('index', { featuredProducts });
+// -------------------------------------------------------------
+// 1. MIDDLEWARE CUSTOM (LOGGER)
+// -------------------------------------------------------------
+app.use((req, res, next) => {
+  const waktu = new Date().toISOString();
+  console.log(`[LOG ${waktu}] ${req.method} ${req.originalUrl}`);
+  next();
 });
 
-// 2. Route Halaman Daftar Produk dengan Filter Query Server-Side
-app.get('/produk', (req, res) => {
-  const { kategori, search } = req.query;
-  let filteredProducts = [...products];
+// 2. KONFIGURASI EXPRESS SESSION
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'rahasia-toko-ariesta-super-aman',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 3600000 } // Sesi berlaku 1 jam
+}));
 
-  if (kategori) {
-    filteredProducts = filteredProducts.filter(p => p.category.toLowerCase() === kategori.toLowerCase());
-  }
+// Import Routes 
+const apiRoutes = require('./routes/api');
+const viewRoutes = require('./routes/views');
 
-  if (search) {
-    filteredProducts = filteredProducts.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
-  }
+app.use('/api', apiRoutes);
+app.use('/', viewRoutes);
 
-  res.render('produk', { 
-    products: filteredProducts,
-    currentKategori: kategori || '',
-    currentSearch: search || ''
-  });
-});
-
-// 3. Route Dinamis Halaman Detail Produk Berdasarkan ID
-app.get('/produk/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const product = products.find(p => p.id === id);
-
-  res.render('detail', { product });
-});
-
-// 4. Route Halaman Tanya AI
-app.get('/tanya-ai', (req, res) => {
-  res.render('tanya-ai');
-});
-
-// 5. REST API Read-Only Mengembalikan Data Produk Format JSON
-app.get('/api/products', (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "Berhasil mengambil data produk",
-    data: products
-  });
-});
-
-// Menjalankan Server di Port 3000
 app.listen(PORT, () => {
   console.log(`Server Toko Ariesta running at http://localhost:${PORT}`);
 });
